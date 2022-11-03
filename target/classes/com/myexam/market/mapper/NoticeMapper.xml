@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Java Code의 인터페이스와 같은 경로와 이름을 namespace에 기술한다. -->
+<mapper namespace="com.myexam.market.mapper.NoticeMapper">
+<select id="getList" resultType="com.myexam.market.domain.NoticeVO">
+select /*+index_desc(notice pk_notice) */
+* from notice
+offset (#{pageNum} - 1) * #{amount} rows fetch next #{amount} rows only
+</select>
+<select id="getTotal" resultType="int">
+<![CDATA[
+select count(*) from notice where nid > 0
+]]>
+</select>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Java Code의 인터페이스와 같은 경로와 이름을 namespace에 기술한다. -->
+<mapper namespace="com.myexam.market.mapper.PolicyMapper">
+<select id="getList" resultType="com.myexam.market.domain.PolicyVO">
+select * from policy order by code asc
+</select>
+
+<select id="getPolicy" resultType="com.myexam.market.domain.PolicyVO">
+select * from policy where code = #{code}
+</select>
+
+<insert id="add">
+insert into policy (code, category, name, value) values(#{code}, #{category}, #{name}, #{value})	
+</insert>
+
+<update id="update">
+update policy set value=#{value} where code=#{code}
+</update>
+
+<delete id="removeAll">
+delete from policy where code=#{code}
+</delete>
+
+<select id="getValue" resultType="String">
+select value from policy where category=#{category} and name=#{name}
+</select>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Java Code의 인터페이스와 같은 경로와 이름을 namespace에 기술한다. -->
+<mapper namespace="com.myexam.market.mapper.TermsMapper">
+<resultMap type="com.myexam.market.domain.TermsVO" id="termsMap">
+	<id property="tid" column="tid"/>
+	<result property="tid" column="tid"/>
+	<result property="title" column="title"/>
+	<result property="content" column="content" jdbcType="BLOB"/>
+	<result property="expose" column="expose"/>
+	<result property="mandatory" column="mandatory"/>
+	<result property="createdAt" column="createdAt"/>
+	<result property="modifiedAt" column="modifiedAt"/>
+</resultMap>
+<select id="getList" resultMap="termsMap">
+select * from terms order by tid asc
+</select>
+<insert id="insert">
+insert into terms (title, content, expose, mandatory) values (#{title}, #{content}, #{expose}, #{mandatory})
+</insert>
+<insert id="insertSelectKey">
+insert into terms (title, content, expose, mandatory) values (#{title}, #{content}, #{expose}, #{mandatory})
+<selectKey keyProperty="tid" order="AFTER" resultType="long">
+	select ISEQ$$_76410.currval from dual
+</selectKey>
+</insert>
+<update id="update">
+update terms set title=#{title}, content=#{content}, expose=#{expose}, mandatory=#{mandatory} where tid=#{tid}
+</update>
+
+<delete id="delete">
+delete from terms where tid=#{tid}
+</delete>
+</mapper>

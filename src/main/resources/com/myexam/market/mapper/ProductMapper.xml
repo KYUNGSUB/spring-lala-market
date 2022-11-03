@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Java Code의 인터페이스와 같은 경로와 이름을 namespace에 기술한다. -->
+<mapper namespace="com.myexam.market.mapper.ProductMapper">
+<sql id="sqlsub">
+	<if test='type != null'>
+		<choose>
+			<when test="type == 'name'">name like '%'||#{keyword}||'%'</when>
+			<when test="type == 'userid'">userid like '%'||#{keyword}||'%'</when>
+		</choose>
+		<trim prefix="and">
+			<if test="detail == 'yes'">
+				<trim suffix=" and ">
+					<if test='category1 != null'>
+						category1=#{category1}
+						<trim prefix=" and ">
+							<if test='category2 != null'>
+								category2=#{category2}
+							</if>
+						</trim>
+					</if>
+				</trim>
+				<trim suffix=" and ">
+					<if test='priceFrom != null'>
+						(salePrice between #{priceFrom} and #{priceTo})
+					</if>
+				</trim>
+				<trim suffix=" and ">
+					<if test='regFrom != null'>
+						(createdAt between to_date(#{regFrom}) and to_date(#{regTo}))
+					</if>
+				</trim>
+				<trim prefix="(" suffix=")" prefixOverrides="OR">
+					<foreach item='kind' collection="exposeArr">
+						<trim prefix="OR">
+							<if test='kind != null'>
+								expose=#{kind}
+							</if>
+						</trim>
+					</foreach>
+				</trim>
+			</if>
+		</trim>
+	</if>
+</sql>
+
+<select id="getList" resultType="com.myexam.market.domain.ProductVO">
+<![CDATA[
+select /*+index_desc(product pk_product) */
+* from product
+]]>
+<where>
+	<if test="type != null">
+		<include refid="sqlsub"></include>
+	</if>
+</where>
+offset (#{pageNum} - 1) * #{amount} rows fetch next #{amount} rows only
+</select>
+<!-- 
+
+ -->
+<select id="selectCount" resultType="int">
+<![CDATA[
+select count(*) from product where pid > 0
+]]>
+</select>
+
+<select id="selectCriteriaCount" resultType="int">
+select count(*) from product where
+	<trim suffix=" and ">
+		<if test='type != null'>
+			<include refid="sqlsub"></include>
+		</if>
+	</trim>
+<![CDATA[
+pid > 0
+]]>
+</select>
+
+<insert id="insertSelectKey">
+insert into product (category1, category2, name, price, saleprice, maxpurchase,
+	deposit, delivery, newp, best, discount, info, opt, userid, introduction,
+	pc_detail, mobile_detail
+<if test="pc_delivery != null">
+	, pc_delivery
+</if>
+<if test="mobile_delivery != null">
+	, mobile_delivery
+</if>
+<if test="pc_exchange != null">
+	, pc_exchange
+</if>
+<if test="mobile_exchange != null">
+	, mobile_exchange
+</if>
+	, memo, expose)
+values (#{category1}, #{category2}, #{name}, #{price}, #{salePrice}, #{maxPurchase},
+	#{deposit}, #{delivery}, #{newp}, #{best}, #{discount}, #{info}, #{opt}, #{userid},
+	#{introduction}, #{pc_detail}, #{mobile_detail}
+<if test="pc_delivery != null">
+	, #{pc_delivery}
+</if>
+<if test="mobile_delivery != null">
+	, #{mobile_delivery}
+</if>
+<if test="pc_exchange != null">
+	, #{pc_exchange}
+</if>
+<if test="mobile_exchange != null">
+	, #{mobile_exchange}
+</if>
+	, #{memo}, #{expose})
+	<selectKey keyProperty="pid" order="AFTER" resultType="long">
+		select ISEQ$$_76155.currval from dual
+	</selectKey>
+</insert>
+<insert id="insert">
+insert into product (category1, category2, name, price, saleprice, maxpurchase,
+	deposit, delivery, newp, best, discount, info, opt, userid, introduction,
+	pc_detail, mobile_detail
+<if test="pc_delivery != null">
+	, pc_delivery
+</if>
+<if test="mobile_delivery != null">
+	, mobile_delivery
+</if>
+<if test="pc_exchange != null">
+	, pc_exchange
+</if>
+<if test="mobile_exchange != null">
+	, mobile_exchange
+</if>
+	, memo, expose)
+values (#{category1}, #{category2}, #{name}, #{price}, #{salePrice}, #{maxPurchase},
+	#{deposit}, #{delivery}, #{newp}, #{best}, #{discount}, #{info}, #{opt}, #{userid},
+	#{introduction}, #{pc_detail}, #{mobile_detail}
+<if test="pc_delivery != null">
+	, #{pc_delivery}
+</if>
+<if test="mobile_delivery != null">
+	, #{mobile_delivery}
+</if>
+<if test="pc_exchange != null">
+	, #{pc_exchange}
+</if>
+<if test="mobile_exchange != null">
+	, #{mobile_exchange}
+</if>
+	, #{memo}, #{expose})
+</insert>
+</mapper>

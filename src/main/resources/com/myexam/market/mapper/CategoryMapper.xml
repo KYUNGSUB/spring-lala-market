@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Java Code의 인터페이스와 같은 경로와 이름을 namespace에 기술한다. -->
+<mapper namespace="com.myexam.market.mapper.CategoryMapper">
+<select id="getListFirst" resultType="com.myexam.market.domain.CategoryVO">
+select * from category where step = 1 order by seq asc
+</select>
+
+<select id="getListSecond" resultType="com.myexam.market.domain.CategoryVO">
+select * from category where step = 2 and parent = #{parent} order by seq asc
+</select>
+
+<select id="selectByCode" resultType="com.myexam.market.domain.CategoryVO">
+select * from category where code = #{code}
+</select>
+
+<insert id="insert">
+insert into category (name, code, expose, gnb, step, seq
+<if test="parent != null">
+, parent
+</if>
+) values (#{name}, #{code}, #{expose}, #{gnb}, #{step}, #{seq}
+<if test="parent != null">
+, #{parent}
+</if>
+)
+</insert>
+
+<select id="getFirstCategoryBySeq" resultType="com.myexam.market.domain.CategoryVO">
+select * from category where step=1 and seq=#{seq}
+</select>
+
+<update id="updateCategorySeq">
+update category set seq = #{seq} where code = #{code}
+</update>
+
+<select id="getSecondCategoryBySeq" resultType="com.myexam.market.domain.CategoryVO">
+select * from category where step = 2 and parent = #{parent} and seq = #{seq}
+</select>
+
+<update id="updateCategory1">
+update category set expose = #{expose} where code = #{code}
+</update>
+
+<update id="updateCategory2">
+update category set expose = #{expose}, gnb = #{gnb} where code = #{code}
+</update>
+
+<delete id="deleteCategory">
+delete from category where code = #{code}
+</delete>
+
+<select id="getOptionInfo" resultType="com.myexam.market.domain.OptionInfo">
+select expose, gnb from category where code=#{code}
+</select>
+
+<update id="updateSequence1">
+update category set seq=seq-1 where step=1 and seq>#{seq}
+</update>
+
+<update id="updateSequence2">
+update category set seq=seq-1 where parent=#{parent} and seq>{#seq}
+</update>
+
+<delete id="deleteSecondCategory">
+delete from category where parent = #{parent}
+</delete>
+
+<select id="getSeq1" resultType="int">
+select count(*) from category where step = #{step}
+</select>
+
+<select id="getSeq2" resultType="int">
+select count(*) from category where step = #{step} and parent = #{parent}
+</select>
+
+<select id="getMaxCount" resultType="com.myexam.market.domain.MaxCount">
+select max(substr(code,4,3)) as v1, count(code) as v2 from category where parent = #{parent}
+</select>
+
+<select id="getCodes" resultType="String">
+select substr(code,4,3) from category where parent = #{parent}
+</select>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Java Code의 인터페이스와 같은 경로와 이름을 namespace에 기술한다. -->
+<mapper namespace="com.myexam.market.mapper.BannerMapper">
+<select id="getBanner" resultType="com.myexam.market.domain.BannerVO">
+select * from banner where kind=#{kind} and position=#{position}
+</select>
+<select id="getBannerInfoList" resultType="com.myexam.market.domain.BannerInfo">
+select * from banner_info where bid = #{bid}
+</select>
+
+<insert id="addBanner">
+	insert into banner (kind, position, location) values (#{kind}, #{position}, #{location})
+</insert>
+<insert id="addBannerSelectKey">
+	insert into banner (kind, position, location) values (#{kind}, #{position}, #{location})
+	<selectKey keyProperty="bid" order="AFTER" resultType="int">
+		select ISEQ$$_76476.currval from dual
+	</selectKey>
+</insert>
+
+<insert id="addBannerInfo">
+	insert into banner_info (bid, url, alt, target, loginBefore)
+	values (#{bid}, #{url}, #{alt}, #{target}, #{loginBefore})
+</insert>
+<insert id="addBannerInfoSelectKey">
+	insert into banner_info (bid, url, alt, target, loginBefore)
+	values (#{bid}, #{url}, #{alt}, #{target}, #{loginBefore})
+	<selectKey keyProperty="info_id" order="AFTER" resultType="int">
+		select ISEQ$$_76480.currval from dual
+	</selectKey>
+</insert>
+
+<update id="updateBanner">
+update banner set location=#{location} where bid = #{bid}
+</update>
+
+<update id="updateBannerInfo">
+update banner_info set url=#{url}, alt=#{alt}, target=#{target}, loginBefore=#{loginBefore} where info_id = #{info_id}
+</update>
+
+<delete id="deleteBannerInfo">
+delete from banner_info where info_id = #{info_id}
+</delete>
+
+<delete id="deleteBanner">
+delete from banner where bid = #{bid}
+</delete>
+</mapper>
